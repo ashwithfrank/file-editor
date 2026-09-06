@@ -1,16 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>File Manager</title>
+    <title>Simple File Editor</title>
     <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
-    <div id="file-manager">
-        <h1>File Manager</h1>
-        <ul id="file-list"></ul>
+    <div class="container">
+        <h1>Simple File Editor</h1>
+        <div id="file-options">
+            <button id="new-file">New File</button>
+            <button id="open-file">Open File</button>
+            <input type="file" id="file-input" style="display:none;" />
+            <button id="download-file">Download File</button>
+        </div>
+        <div id="file-editor" style="display:none;">
+            <textarea id="file-content"></textarea>
+            <button id="save-file">Save File</button>
+        </div>
     </div>
-    <script src="app.js"></script>
+    <script src="script.js"></script>
 </body>
+
 </html>

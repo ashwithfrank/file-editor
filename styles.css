@@ -1,31 +1,30 @@
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-color: #f4f4f9;
-}
+   body {
+       font-family: Arial, sans-serif;
+       margin: 0;
+       padding: 0;
+       display: flex;
+       justify-content: center;
+       align-items: center;
+       height: 100vh;
+       background-color: #f4f4f4;
+   }
 
-#file-manager {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
+   .container {
+       text-align: center;
+   }
 
-#file-list {
-    list-style-type: none;
-    padding: 0;
-}
+   #file-options button,
+   #file-editor button,
+   #file-editor textarea {
+       margin: 10px;
+       padding: 10px;
+       font-size: 16px;
+       cursor: pointer;
+   }
 
-#file-list li {
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
-}
-
-#file-list li:last-child {
-    border-bottom: none;
-}
+   #file-editor textarea {
+       width: 80%;
+       height: 300px;
+       border: 1px solid #ccc;
+       margin-top: 20px;
+   }
