@@ -81,12 +81,13 @@ function confirmDiscard(file) {
       $('confirm-discard').removeEventListener('click', onDiscard);
       $('confirm-save').removeEventListener('click', onSave);
     };
-    const onDiscard = () => { cleanup(); closeModal(); resolve('discard'); };
-    const onSave = () => { cleanup(); closeModal(); resolve('save'); };
+    const onDiscard = () => closeModal('discard');
+    const onSave = () => closeModal('save');
     $('confirm-discard').addEventListener('click', onDiscard);
     $('confirm-save').addEventListener('click', onSave);
-    // If the user hits Cancel or Escape, closeModal(null) fires this resolver.
-    modalResolve = (result) => { if (result === null) { cleanup(); resolve('cancel'); } };
+    // Runs exactly once no matter how the dialog closes (Discard, Save,
+    // Cancel, backdrop click, or Escape) — always detaches the listeners.
+    modalResolve = (result) => { cleanup(); resolve(result); };
     openModal('confirm-modal');
   });
 }
@@ -143,7 +144,7 @@ async function requestClose(id) {
   if (!file) return;
   if (file.dirty) {
     const choice = await confirmDiscard(file);
-    if (choice === 'cancel') return;
+    if (!choice) return; // cancelled (Escape, backdrop, or Cancel button)
     if (choice === 'save') { await saveFile(file); }
   }
   closeFile(id);
@@ -217,16 +218,17 @@ async function createNewFile() {
   untitledCounter += 1;
   const defaultName = `untitled-${untitledCounter}.txt`;
   $('newfile-name').value = defaultName;
-  openModal('newfile-modal');
   const name = await new Promise((resolve) => {
-    modalResolve = resolve;
     const onConfirm = () => {
-      $('newfile-confirm').removeEventListener('click', onConfirm);
       const value = $('newfile-name').value.trim() || defaultName;
-      closeModal();
-      resolve(value);
+      closeModal(value);
     };
     $('newfile-confirm').addEventListener('click', onConfirm);
+    modalResolve = (result) => {
+      $('newfile-confirm').removeEventListener('click', onConfirm);
+      resolve(result);
+    };
+    openModal('newfile-modal');
   });
   if (!name) return;
   const file = {
@@ -340,16 +342,17 @@ $('btn-save').addEventListener('click', () => saveFile(getActiveFile()));
 $('btn-download').addEventListener('click', () => downloadFile(getActiveFile()));
 $('btn-goto').addEventListener('click', async () => {
   $('goto-line').value = '';
-  openModal('goto-modal');
   const value = await new Promise((resolve) => {
-    modalResolve = resolve;
     const onConfirm = () => {
-      $('goto-confirm').removeEventListener('click', onConfirm);
       const n = parseInt($('goto-line').value, 10);
-      closeModal();
-      resolve(Number.isFinite(n) ? n : null);
+      closeModal(Number.isFinite(n) ? n : null);
     };
     $('goto-confirm').addEventListener('click', onConfirm);
+    modalResolve = (result) => {
+      $('goto-confirm').removeEventListener('click', onConfirm);
+      resolve(result);
+    };
+    openModal('goto-modal');
   });
   if (value) goToLine(value);
 });
