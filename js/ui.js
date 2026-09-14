@@ -52,7 +52,14 @@ let activeModal = null;
 let modalResolve = null;
 
 function openModal(id) {
-  activeModal = $(id);
+  const nextModal = $(id);
+  if (activeModal && activeModal !== nextModal) {
+    // Only one dialog may be visible at a time — cancel whatever was open
+    // (this resolves its pending promise with `null`, treated as "cancelled"
+    // everywhere that awaits a modal) before showing the new one.
+    closeModal(null);
+  }
+  activeModal = nextModal;
   overlay.hidden = false;
   activeModal.hidden = false;
   const firstField = activeModal.querySelector('input, select, button.btn-primary');
@@ -462,7 +469,7 @@ mediaDark.addEventListener('change', () => { if (state.settings.theme === 'auto'
 // ---------- Global keyboard shortcuts ----------
 document.addEventListener('keydown', (e) => {
   const mod = e.ctrlKey || e.metaKey;
-  if (!mod) return;
+  if (!mod || activeModal) return; // don't fight with whatever dialog is open
   const key = e.key.toLowerCase();
   if (key === 's') { e.preventDefault(); saveFile(getActiveFile()); }
   else if (key === 'f') { e.preventDefault(); openFindBar(false); }
