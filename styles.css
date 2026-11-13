@@ -6,6 +6,12 @@
 
 /* ---------- Reset ---------- */
 *, *::before, *::after { box-sizing: border-box; }
+
+/* Always respect the HTML hidden attribute */
+[hidden] {
+  display: none !important;
+}
+
 html, body { height: 100%; }
 body {
   margin: 0;
